@@ -1,10 +1,8 @@
-import USMap from "../components/map/USMap";
-
 function Dashboard() {
   return (
     <div>
-      <h2 style={{ textAlign: "center" }}>Travel Map Preview</h2>
-      <USMap />
+      <h2>Your Trips</h2>
+      {/* List of trips will go here */}
     </div>
   );
 }
