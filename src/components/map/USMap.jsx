@@ -1,55 +1,49 @@
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 
-const geoUrl =
-  "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
+const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
-function USMap({ selectedStates, onStateClick }) {
-
-  const handleClick = (geo) => {
-    const stateCode = geo.properties.postal;
-
-    let updatedStates;
-
-    if (selectedStates.includes(stateCode)) {
-      // Remove state
-      updatedStates = selectedStates.filter(
-        (state) => state !== stateCode
-      );
-    } else {
-      // Add state
-      updatedStates = [...selectedStates, stateCode];
-    }
-
-    onStateClick(updatedStates);
-  };
+/**
+ * Props:
+ * - visitedStates: array of geo.id strings to highlight (dashboard)
+ * - selectedStates: array of geo.id strings to highlight (trip edit)
+ * - onToggleState: function(stateId) for trip edit mode (optional)
+ */
+function USMap({ visitedStates = [], selectedStates = [], onToggleState }) {
+  // If selectedStates provided, use that; otherwise use visitedStates
+  const highlight = selectedStates.length ? selectedStates : visitedStates;
 
   return (
-    <ComposableMap projection="geoAlbersUsa">
+    <ComposableMap
+      projection="geoAlbersUsa"
+      width={800}
+      height={500}
+      style={{ width: "100%", maxWidth: "900px", height: "auto" }}
+    >
       <Geographies geography={geoUrl}>
         {({ geographies }) =>
           geographies.map((geo) => {
-            const isSelected = selectedStates.includes(
-              geo.properties.postal
-            );
+            const stateId = geo.id;
+            const isHighlighted = highlight.includes(stateId);
 
             return (
               <Geography
                 key={geo.rsmKey}
                 geography={geo}
-                onClick={() => handleClick(geo)}
+                onClick={() => onToggleState?.(stateId)}
                 style={{
                   default: {
-                    fill: isSelected ? "#2ecc71" : "#DDD",
-                    outline: "none"
+                    fill: isHighlighted ? "#2ecc71" : "#D6D6DA",
+                    outline: "none",
                   },
                   hover: {
                     fill: "#3498db",
-                    outline: "none"
+                    outline: "none",
+                    cursor: onToggleState ? "pointer" : "default",
                   },
                   pressed: {
-                    fill: "#2ecc71",
-                    outline: "none"
-                  }
+                    fill: isHighlighted ? "#27ae60" : "#95a5a6",
+                    outline: "none",
+                  },
                 }}
               />
             );

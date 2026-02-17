@@ -20,6 +20,17 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
+      {/* Create new trip */}
+      <Route
+        path="/trips/new"
+        element={
+          <ProtectedRoute>
+            <TripDetails />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Edit existing trip */}
       <Route
         path="/trip/:tripId"
         element={
