@@ -1,68 +1,95 @@
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const [trips, setTrips] = useState([]);
   const [title, setTitle] = useState("");
   const navigate = useNavigate();
-  const token = localStorage.getItem("token")
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     const fetchTrips = async () => {
-      const res = await fetch("http://localhost:5000/api/trips", {
-        headers: {
-          Authorization: `Bearer ${token}`
+      try {
+        const res = await fetch("http://localhost:5000/api/trips", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message);
         }
-      });
-      const data = await res.json();
-      setTrips(data);
+
+        setTrips(data);
+
+      } catch (error) {
+        console.error("Error fetching trips:", error.message);
+      }
     };
 
     fetchTrips();
-  }, []);
+  }, [token, navigate]);
 
-  const handleCreatetrip = async () => {
-    const res = await fetch("http://localhost:5000/api/trips", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({title})
-    });
+  const handleCreateTrip = async () => {
+    if (!title.trim()) return;
 
-    const newTrip = await res.json();
+    try {
+      const res = await fetch("http://localhost:5000/api/trips", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ title })
+      });
 
-    setTrips([...trips, newTrip]);
-    setTitle("");
+      const newTrip = await res.json();
+
+      if (!res.ok) {
+        throw new Error(newTrip.message);
+      }
+
+      setTrips([...trips, newTrip]);
+      setTitle("");
+
+    } catch (error) {
+      console.error("Error creating trip:", error.message);
+    }
   };
 
   return (
     <div>
       <h2>Your Trips</h2>
 
-      <input 
-      type="text" 
-      placeholder="Trip Title"
-      value={title}
-      onChange={(e) => setTitle(e.target.value)}
+      <input
+        type="text"
+        placeholder="Trip Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
       />
-      <button onClick={handleCreatetrip}>
+
+      <button onClick={handleCreateTrip}>
         Create Trip
       </button>
+
       <ul>
         {trips.map((trip) => (
-          <li key={trip._id}
+          <li
+            key={trip._id}
             onClick={() => navigate(`/trip/${trip._id}`)}
-            style={{cursor: "pointer"}}
+            style={{ cursor: "pointer" }}
           >
-           {trip.title} 
+            {trip.title}
           </li>
         ))}
       </ul>
-
-
-      {/* List of trips will go here */}
     </div>
   );
 }

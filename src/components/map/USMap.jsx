@@ -1,49 +1,53 @@
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
-import { useState } from "react";
 
-const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
+const geoUrl =
+  "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
-function USMap() {
-  const [selectedStates, setSelectedStates] = useState([]);
+function USMap({ selectedStates, onStateClick }) {
 
-  const handleStateClick = (geo) => {
-    const stateId = geo.id;
+  const handleClick = (geo) => {
+    const stateCode = geo.properties.postal;
 
-    setSelectedStates((prev) =>
-      prev.includes(stateId)
-        ? prev.filter((id) => id !== stateId)
-        : [...prev, stateId]
-    );
+    let updatedStates;
+
+    if (selectedStates.includes(stateCode)) {
+      // Remove state
+      updatedStates = selectedStates.filter(
+        (state) => state !== stateCode
+      );
+    } else {
+      // Add state
+      updatedStates = [...selectedStates, stateCode];
+    }
+
+    onStateClick(updatedStates);
   };
 
   return (
-    <ComposableMap
-      projection="geoAlbersUsa"
-      width={800}
-      height={500}
-      style={{ width: "100%", height: "auto" }}
-    >
+    <ComposableMap projection="geoAlbersUsa">
       <Geographies geography={geoUrl}>
         {({ geographies }) =>
           geographies.map((geo) => {
-            const isSelected = selectedStates.includes(geo.id);
+            const isSelected = selectedStates.includes(
+              geo.properties.postal
+            );
 
             return (
               <Geography
                 key={geo.rsmKey}
                 geography={geo}
-                onClick={() => handleStateClick(geo)}
+                onClick={() => handleClick(geo)}
                 style={{
                   default: {
-                    fill: isSelected ? "#F53" : "#D6D6DA",
+                    fill: isSelected ? "#2ecc71" : "#DDD",
                     outline: "none"
                   },
                   hover: {
-                    fill: "#FF8C69",
+                    fill: "#3498db",
                     outline: "none"
                   },
                   pressed: {
-                    fill: "#E42",
+                    fill: "#2ecc71",
                     outline: "none"
                   }
                 }}
@@ -55,6 +59,5 @@ function USMap() {
     </ComposableMap>
   );
 }
-
 
 export default USMap;
