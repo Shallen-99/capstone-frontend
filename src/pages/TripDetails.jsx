@@ -87,7 +87,7 @@ function TripDetails() {
         await api.post("/trips", payload);
       }
 
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       console.error(err);
       setError("Failed to save trip.");
@@ -107,7 +107,7 @@ function TripDetails() {
       setError("");
       setLoading(true);
       await api.delete(`/trips/${tripId}`);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       console.error(err);
       setError("Failed to delete trip.");
@@ -139,7 +139,7 @@ function TripDetails() {
 
             <button
               className="tripd__btn tripd__btn--ghost"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/dashboard")}
               disabled={loading}
             >
               Cancel
@@ -312,7 +312,7 @@ function TripDetails() {
 
                 <button
                   className="tripd__btn tripd__btn--ghost"
-                  onClick={() => navigate("/")}
+                  onClick={() => navigate("/dashboard")}
                   disabled={loading}
                 >
                   Cancel

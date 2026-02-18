@@ -19,7 +19,7 @@ function Login() {
 
     try {
       await login(email, password);
-      navigate("/dashboard"); // ✅ changed
+      navigate("/dashboard"); //changed
     } catch (error) {
       setErrorMsg(error?.message || "Login failed. Please try again.");
       console.error("Login error:", error?.message);
@@ -39,7 +39,7 @@ function Login() {
         );
       }
       await loginWithGoogle();
-      navigate("/dashboard"); // ✅ changed
+      navigate("/dashboard"); //changed
     } catch (error) {
       setErrorMsg(error?.message || "Google login failed. Please try again.");
       console.error("Google login error:", error?.message);
