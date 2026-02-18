@@ -1,16 +1,67 @@
-# React + Vite
+# Your World
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+#### A full-stack web application built for my final project.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Description
+Your World: 
 
-## React Compiler
+## Table of Contents
+* [Technologies Used](#technologiesused)
+* [Features](#features)
+* [Design](#design)
+* [Project Next Steps](#nextsteps)
+* [Deployed App](#deployment)
+* [About the Author](#author)
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## <a name="technologiesused"></a>Technologies Used
+* JavaScript
+* HTML
+* CSS
+* React
+* VITE
+* Express
+* Node.js
+* MongoDB
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Features
+Create trips
+Users can take turn playing game pieces.
+
+## Whiteboard Images
+*can be found in project Images folder
+
+## Trello Planning
+* https://trello.com/b/2jeHdFcV/project-1-connect-4
+
+## <a name="design"></a>Design
+* Design elements implemented using HTML5 and CSS3. 
+
+
+## <a name="nextsteps"></a>Project Next Steps
+* Allow the user to chose player one or player two.
+* Allow users to play against computer.
+* Add a timer
+* Add a scoreboard. 
+* Users can change the theme.
+
+## <a name="deployment"></a>Deployed Link
+[Netlify]([https://wonderful-brahmagupta-6a75d3.netlify.com](https://connect4pc.netlify.app/))
+
+* You can view the repository:
+[Github.com](https://github.com/Gr8ness21/Connect-4)
+* If unable to view please go live locally through VS Code
+
+## <a name="author"></a>About The Author
+I build applications and mini projects tied to my various interests. I look for creative solutions to real world problems and think of technical ways to address them. While no application is ever perfect I find joy in the process and all my final products!
+    
+## Works Cited:
+*https://stackoverflow.com/questions/24093290/what-does-the-question-mark-mean-in-javascript/24093304
+*https://www.w3schools.com/jquery/jquery_ref_events.asp
+*Understanding "this" in JQUERY: 
+* 	the this object doesn't change. It is the owner of the function. It is, in most cases like this, simply a node and you can reference all of its properties like this.className. (think of it as you would a node or whatnot that you get with document.getElementById). It is just the "owner" of the function. Therefore, you are just passing the this object to jQuery's $(). Conclusion: If you want to use jQuery functions for the current node, use $(this). But if you want to access the objects own properties (e.g. .name, className, .id), use simply this.
+- https://stackoverflow.com/questions/8469635/jquery-when-to-use-this-and-when-to-use-this
+
+* A constructor: A constructor in Java is a block of code similar to a method that's called when an instance of an object is created. Here are the key differences between aconstructor and a method: A constructor doesn't have a return type. ... Unlike methods, constructorsare not considered members of a class.
+- https://www.w3schools.com/java/java_constructors.asp

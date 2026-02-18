@@ -80,7 +80,7 @@ function Dashboard() {
       <div className="dash__container">
         <header className="dash__header">
           <div>
-            <h1 className="dash__title">My Travel Dashboard</h1>
+            <h1 className="dash__title">Your World Dashboard</h1>
             <p className="dash__subtitle">
               Visited <strong>{visitedStates.length}</strong> / {totalStates} states
               <span className="dash__sep">•</span>

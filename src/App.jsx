@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import TripDetails from "./pages/TripDetails";
 import "./styles/theme.css";
+import "./styles/global.css";
 
 function App() {
   return (

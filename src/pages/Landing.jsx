@@ -24,7 +24,7 @@ function Landing() {
 
       {/* Content */}
       <div className="landing__content">
-        <h1 className="landing__title">Track Your Travel Story</h1>
+        <h1 className="landing__title">Your World</h1>
         <p className="landing__subtitle">
           Save trips, mark visited states, rate experiences, and build your personal map.
         </p>
