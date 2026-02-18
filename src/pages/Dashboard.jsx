@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axiosconfig";
 import USMap from "../components/map/USMap";
 import "../styles/dashboard.css";
+import useTheme from "../hooks/useTheme";
 
 function Dashboard() {
   const [trips, setTrips] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   const fetchTrips = async () => {
     try {
@@ -28,7 +31,6 @@ function Dashboard() {
     fetchTrips();
   }, []);
 
-  // union of all states across all trips
   const visitedStates = useMemo(() => {
     const set = new Set();
     for (const trip of trips) {
@@ -40,7 +42,6 @@ function Dashboard() {
   const totalStates = 50;
   const remaining = Math.max(totalStates - visitedStates.length, 0);
 
-  // quick stats
   const totalTrips = trips.length;
   const avgRating =
     trips.length === 0
@@ -54,10 +55,29 @@ function Dashboard() {
           return (sum / ratings.length).toFixed(1);
         })();
 
+  //DELETE trip handler
+  const handleDeleteTrip = async (trip, e) => {
+    // prevent the trip card click navigation
+    e.preventDefault();
+    e.stopPropagation();
+
+    const ok = window.confirm(`Delete trip "${trip.title}"? This cannot be undone.`);
+    if (!ok) return;
+
+    try {
+      setError("");
+      await api.delete(`/trips/${trip._id}`);
+      // remove from UI
+      setTrips((prev) => prev.filter((t) => t._id !== trip._id));
+    } catch (err) {
+      console.error(err);
+      setError("Failed to delete trip.");
+    }
+  };
+
   return (
     <div className="dash">
       <div className="dash__container">
-        {/* Header */}
         <header className="dash__header">
           <div>
             <h1 className="dash__title">My Travel Dashboard</h1>
@@ -69,6 +89,42 @@ function Dashboard() {
           </div>
 
           <div className="dash__actions">
+            {/* Theme toggle (switch) */}
+            <button
+              type="button"
+              className="dash__themeToggle"
+              role="switch"
+              aria-checked={resolvedTheme === "light"}
+              aria-label="Toggle theme"
+              onClick={toggleTheme}
+              title="Toggle theme"
+            >
+              <span className="dash__themeToggleTrack" aria-hidden="true">
+                <span className="dash__themeToggleThumb" aria-hidden="true">
+                  <span className="dash__themeToggleIcon" aria-hidden="true">
+                    {resolvedTheme === "dark" ? (
+                      <svg viewBox="0 0 24 24" width="16" height="16">
+                        <path
+                          fill="currentColor"
+                          d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"
+                        />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" width="16" height="16">
+                        <path
+                          fill="currentColor"
+                          d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12Zm0-16a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1Zm0 18a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1ZM4 11a1 1 0 0 1 1 1 1 1 0 1 1-2 0 1 1 0 0 1 1-1Zm16 0a1 1 0 0 1 1 1 1 1 0 1 1-2 0 1 1 0 0 1 1-1ZM5.64 5.64a1 1 0 0 1 1.41 0l.7.7a1 1 0 0 1-1.41 1.41l-.7-.7a1 1 0 0 1 0-1.41Zm11.31 11.31a1 1 0 0 1 1.41 0l.7.7a1 1 0 1 1-1.41 1.41l-.7-.7a1 1 0 0 1 0-1.41ZM18.36 5.64a1 1 0 0 1 0 1.41l-.7.7a1 1 0 1 1-1.41-1.41l.7-.7a1 1 0 0 1 1.41 0ZM7.05 16.95a1 1 0 0 1 0 1.41l-.7.7a1 1 0 1 1-1.41-1.41l.7-.7a1 1 0 0 1 1.41 0Z"
+                        />
+                      </svg>
+                    )}
+                  </span>
+                </span>
+              </span>
+              <span className="dash__themeToggleLabel">
+                {resolvedTheme === "dark" ? "Dark" : "Light"}
+              </span>
+            </button>
+
             <button
               className="dash__btn dash__btn--primary"
               onClick={() => navigate("/trips/new")}
@@ -81,17 +137,13 @@ function Dashboard() {
           </div>
         </header>
 
-        {/* Error */}
         {error && (
           <div className="dash__error" role="alert" aria-live="polite">
-            <span className="dash__errorIcon" aria-hidden="true">
-              
-            </span>
+            <span className="dash__errorIcon" aria-hidden="true"></span>
             <span>{error}</span>
           </div>
         )}
 
-        {/* Top Stats */}
         <section className="dash__stats">
           <div className="dash__statCard">
             <div className="dash__statLabel">Visited States</div>
@@ -107,25 +159,19 @@ function Dashboard() {
 
           <div className="dash__statCard">
             <div className="dash__statLabel">Average Rating</div>
-            <div className="dash__statValue">
-              {avgRating ? avgRating : "—"}
-            </div>
+            <div className="dash__statValue">{avgRating ? avgRating : "—"}</div>
             <div className="dash__statHint">
               {avgRating ? "Based on rated trips" : "No ratings yet"}
             </div>
           </div>
         </section>
 
-        {/* Main Grid */}
         <section className="dash__grid">
-          {/* Map Panel */}
           <div className="dash__panel">
             <div className="dash__panelHeader">
               <div>
                 <h2 className="dash__panelTitle">Visited Map</h2>
-                <p className="dash__panelSub">
-                  Hover states on the map to explore.
-                </p>
+                <p className="dash__panelSub">Hover states on the map to explore.</p>
               </div>
 
               <div className="dash__legend" aria-label="Map legend">
@@ -147,7 +193,6 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Trips Panel */}
           <div className="dash__panel">
             <div className="dash__panelHeader dash__panelHeader--tight">
               <div>
@@ -166,9 +211,7 @@ function Dashboard() {
               </div>
             ) : trips.length === 0 ? (
               <div className="dash__empty">
-                <div className="dash__emptyIcon" aria-hidden="true">
-                  
-                </div>
+                <div className="dash__emptyIcon" aria-hidden="true"></div>
                 <p className="dash__emptyTitle">No trips yet</p>
                 <p className="dash__emptySub">
                   Click <strong>New Trip</strong> to create your first route.
@@ -187,14 +230,29 @@ function Dashboard() {
                     key={trip._id}
                     className="dash__tripCard"
                     onClick={() => navigate(`/trip/${trip._id}`)}
+                    type="button"
                   >
                     <div className="dash__tripTop">
                       <div className="dash__tripTitle">{trip.title}</div>
-                      {typeof trip.rating === "number" && trip.rating > 0 ? (
-                        <div className="dash__pill">{trip.rating}/5</div>
-                      ) : (
-                        <div className="dash__pill dash__pill--muted">Unrated</div>
-                      )}
+
+                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                        {typeof trip.rating === "number" && trip.rating > 0 ? (
+                          <div className="dash__pill">{trip.rating}/5</div>
+                        ) : (
+                          <div className="dash__pill dash__pill--muted">Unrated</div>
+                        )}
+
+                        {/*Delete button inside the clickable card */}
+                        <button
+                          type="button"
+                          className="dash__btn dash__btn--ghost"
+                          onClick={(e) => handleDeleteTrip(trip, e)}
+                          aria-label={`Delete ${trip.title}`}
+                          title="Delete trip"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
 
                     <div className="dash__tripMeta">

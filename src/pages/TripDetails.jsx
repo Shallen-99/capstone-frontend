@@ -47,9 +47,7 @@ function TripDetails() {
 
   const toggleState = (stateId) => {
     setStates((prev) =>
-      prev.includes(stateId)
-        ? prev.filter((s) => s !== stateId)
-        : [...prev, stateId]
+      prev.includes(stateId) ? prev.filter((s) => s !== stateId) : [...prev, stateId]
     );
   };
 
@@ -89,10 +87,30 @@ function TripDetails() {
         await api.post("/trips", payload);
       }
 
-      navigate("/"); // back to dashboard
+      navigate("/");
     } catch (err) {
       console.error(err);
       setError("Failed to save trip.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //DELETE handler
+  const handleDelete = async () => {
+    if (!tripId) return;
+
+    const ok = window.confirm("Delete this trip? This cannot be undone.");
+    if (!ok) return;
+
+    try {
+      setError("");
+      setLoading(true);
+      await api.delete(`/trips/${tripId}`);
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+      setError("Failed to delete trip.");
     } finally {
       setLoading(false);
     }
@@ -119,9 +137,25 @@ function TripDetails() {
               {loading ? "Saving..." : "Save Trip"}
             </button>
 
-            <button className="tripd__btn tripd__btn--ghost" onClick={() => navigate("/")}>
+            <button
+              className="tripd__btn tripd__btn--ghost"
+              onClick={() => navigate("/")}
+              disabled={loading}
+            >
               Cancel
             </button>
+
+            {/*Only show delete in edit mode */}
+            {tripId && (
+              <button
+                className="tripd__btn tripd__btn--danger"
+                onClick={handleDelete}
+                disabled={loading}
+                type="button"
+              >
+                Delete Trip
+              </button>
+            )}
           </div>
         </header>
 
@@ -209,7 +243,7 @@ function TripDetails() {
 
               {/* Photos */}
               <div className="tripd__field">
-                <label className="tripd__label">Add Photo (URL for MVP)</label>
+                <label className="tripd__label">Add Photo </label>
 
                 <div className="tripd__row">
                   <input
@@ -275,6 +309,7 @@ function TripDetails() {
                 >
                   {loading ? "Saving..." : "Save Trip"}
                 </button>
+
                 <button
                   className="tripd__btn tripd__btn--ghost"
                   onClick={() => navigate("/")}
@@ -282,6 +317,18 @@ function TripDetails() {
                 >
                   Cancel
                 </button>
+
+                {/*Delete in footer too (only when editing) */}
+                {tripId && (
+                  <button
+                    className="tripd__btn tripd__btn--danger"
+                    onClick={handleDelete}
+                    disabled={loading}
+                    type="button"
+                  >
+                    Delete Trip
+                  </button>
+                )}
               </div>
             </div>
           </section>

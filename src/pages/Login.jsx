@@ -19,7 +19,7 @@ function Login() {
 
     try {
       await login(email, password);
-      navigate("/");
+      navigate("/dashboard"); // ✅ changed
     } catch (error) {
       setErrorMsg(error?.message || "Login failed. Please try again.");
       console.error("Login error:", error?.message);
@@ -39,7 +39,7 @@ function Login() {
         );
       }
       await loginWithGoogle();
-      navigate("/");
+      navigate("/dashboard"); // ✅ changed
     } catch (error) {
       setErrorMsg(error?.message || "Google login failed. Please try again.");
       console.error("Google login error:", error?.message);
@@ -54,7 +54,6 @@ function Login() {
         <h1 className="login__title">Welcome Back</h1>
         <p className="login__subtitle">Log in to continue your travel journey.</p>
 
-        {/* Error message */}
         {errorMsg && (
           <div className="login__error" role="alert" aria-live="polite">
             <span className="login__errorIcon" aria-hidden="true">⚠</span>
@@ -98,7 +97,6 @@ function Login() {
           <span>or</span>
         </div>
 
-        {/* Google login */}
         <button
           type="button"
           className="login__googleBtn"
@@ -109,7 +107,6 @@ function Login() {
           Continue with Google
         </button>
 
-        {/* Register link */}
         <p className="login__register">
           Don’t have an account?{" "}
           <Link className="login__registerLink" to="/register">
