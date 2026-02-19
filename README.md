@@ -46,7 +46,7 @@ Add a photo or video to you trip.
 * Transition to a more social media aspect
 
 ## <a name="deployment"></a>Deployed Link
-[Netlify]NA
+[Netlify](https://frontend-cap.netlify.app/)
 
 * You can view the repository:
 [Github.com](https://github.com/Shallen-99/capstone-frontend.git)
